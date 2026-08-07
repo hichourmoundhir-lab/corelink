@@ -248,7 +248,7 @@
 
 <h3>2.2 Why now</h3>
 <ul>
-    <li>Commercial event sensors are now affordable and shipping (Prophesee, Samsung, Sony); the sensing bottleneck moved from sensor availability to processing.</li>
+    <li>Commercial event sensors are now cheap and shipping (e.g., the $400 Prophesee GENX320 module); the sensing bottleneck moved from sensor cost to processing.</li>
     <li>NPU/GPU latency jitter is a known, unfixable-in-software problem for closed-loop control; the market has not yet seen a <em>companion</em> product that owns the latency argument end-to-end.</li>
     <li>Open flight stacks (PX4/ArduPilot) make a drop-in companion module commercially viable without OEM certification work.</li>
 </ul>
@@ -257,7 +257,7 @@
 
 <table>
     <tr><th>Dimension</th><th>MVP scope</th></tr>
-    <tr><td>Sensor</td><td>Single commercial event camera (Prophesee/DVS-class) with standard interface to PL.</td></tr>
+    <tr><td>Sensor</td><td>Single event camera: Prophesee GENX320 module (OpenMV) at ~$400, 320&times;320, &gt;140 dB HDR, sub-ms event latency, with standard interface to PL. Higher-resolution options (iniVation DVXplorer-class, $1,500&ndash;$4,000) deferred.</td></tr>
     <tr><td>Processing</td><td>Streaming FPGA pipeline: event pre-processing, time-surface accumulation, optical flow, occupancy/obstacle map.</td></tr>
     <tr><td>Outputs</td><td>MAVLink/ROS 2 advisory messages: brake, avoid, slow-down, capture. Rate-limited and logged.</td></tr>
     <tr><td>Safety</td><td>Advisory-only. No direct flight-control actuation. CBF safety filter enforces a minimum braking distance guarantee.</td></tr>
@@ -272,6 +272,30 @@
     <li>Not an NPU-killer — it does not promise to win TOPS/W for a fixed detector.</li>
     <li>Not a defect-diagnosis product; candidate flags remain reviewable by an operator.</li>
 </ul>
+
+<h3>3.2 Sensor choice rationale</h3>
+<p>The event camera is the load-bearing decision of the MVP: it is the only sensor class that delivers sub-millisecond latency, high dynamic range without motion blur, and texture for visual servoing in one package. A cheap ($400) production sensor — the Prophesee GENX320 — now exists, which removes the cost objection. Alternatives were evaluated and rejected for the MVP:</p>
+<table>
+    <tr><th>Alternative</th><th>Cost</th><th>Why not the MVP sensor</th></tr>
+    <tr><td>ToF / depth camera (RealSense/OAK)</td><td>$150&ndash;400</td><td>Frame-rate latency (10&ndash;30 ms) and poor outdoor HDR; no sub-ms determinism.</td></tr>
+    <tr><td>Solid-state LiDAR (TF-Luna/LD06)</td><td>$100&ndash;200</td><td>Range only, no texture; useless for landing-pad servoing; weather-limited.</td></tr>
+    <tr><td>Mid-range LiDAR (Livox-class)</td><td>$1,500+</td><td>Costlier than the whole CoreLink system; still no HDR-vision.</td></tr>
+    <tr><td>mmWave radar</td><td>$100&ndash;400</td><td>Good range/velocity, but no angular/texture resolution for visual servoing.</td></tr>
+    <tr><td>Ultrasonic</td><td>$5&ndash;50</td><td>Too slow and short-range for reactive loops.</td></tr>
+</table>
+<p>None match the event camera on the latency + HDR + visual-texture combination that the thesis's latency-to-stability claim requires. A low-cost LiDAR or radar may be added later as a <em>complementary safety channel</em>, not a substitute.</p>
+
+<h3>3.3 MVP cost model (per unit)</h3>
+<table>
+    <tr><th>Component</th><th>CoreLink MVP</th><th>Hailo-based system (reference)</th></tr>
+    <tr><td>Camera</td><td class="win">GENX320 event module: $400</td><td>Frame cam: $30&ndash;150</td></tr>
+    <tr><td>Accelerator / fabric</td><td>Kria K26 SOM: $300&ndash;400</td><td>Hailo-8 M.2: $119</td></tr>
+    <tr><td>Host CPU/board</td><td class="win">None needed (ARM on-SoPC)</td><td>RPi 5 (~$90) or Jetson (~$280)</td></tr>
+    <tr><td>Carrier / adapter / PSU / misc</td><td>$150&ndash;250</td><td>$30&ndash;100</td></tr>
+    <tr><td><strong>Total BOM</strong></td><td><strong>~$850&ndash;1,050</strong></td><td><strong>~$270&ndash;470</strong> (RPi) / ~$520&ndash;650 (Jetson)</td></tr>
+    <tr><td>Engineering to reach a working closed loop</td><td class="win">Ships as the loop (drop-in MAVLink advisory)</td><td>Significant: glue, latency tuning, autopilot bridge</td></tr>
+</table>
+<p><strong>Honest read:</strong> Hailo wins on raw parts cost and CNN throughput. CoreLink wins on what makes the loop work — latency determinism, HDR, a provable safety margin, and drop-in integration. The buyer economics that decide the sale are re-flight cost, analyst time, and contact/crash risk, which the $200 part-price difference does not capture.</p>
 
 <h2>4. Competitive Positioning</h2>
 
