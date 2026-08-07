@@ -330,6 +330,26 @@
 <h3>5.3 First commercial proof</h3>
 <p>The first commercial proof is <strong>not a board shipment</strong>. It is a buyer who can show on their own inspection workflow: fewer unusable captures, fewer repeat passes, faster analyst triage, or longer mission endurance. That evidence strengthens both the paper and subsequent design-in sales.</p>
 
+<h3>5.4 Product line: three variants from one pipeline</h3>
+<p>The MVP is designed as one modular, configurable pipeline (sensor &rarr; pre-processing &rarr; optical flow &rarr; occupancy &rarr; CBF filter &rarr; MAVLink out), where each capability claim maps to a specific stage. HDR comes from the event sensor, sub-ms latency from the streaming fabric, and integration/SWaP from the companion-module design. Because every HLS kernel also has a software reference implementation, variants are re-targeted builds of the same codebase — not new products.</p>
+<table>
+    <tr><th>SKU</th><th>Keeps</th><th>Drops</th><th>Architecture</th><th>Extraction effort from MVP</th><th>Target market</th></tr>
+    <tr><td><strong>A &mdash; Value</strong></td><td>HDR + SWaP/integration</td><td>sub-ms &rarr; runs at 10&ndash;30 ms</td><td>Event camera + ARM software pipeline (no streaming fabric)</td><td class="win"><strong>Low.</strong> Same kernels compiled for ARM; configurable build path already designed in.</td><td>Inspection / delivery where 30 ms is sufficient</td></tr>
+    <tr><td><strong>B &mdash; Flagship (MVP)</strong></td><td>All three: sub-ms + HDR + SWaP</td><td>none</td><td>Full streaming FPGA pipeline, exactly as spec'd</td><td class="win">Baseline &mdash; this is the MVP itself.</td><td>Premium inspection, BVLOS</td></tr>
+    <tr><td><strong>C &mdash; Latency core</strong></td><td>sub-ms only</td><td>HDR/SWaP (uses customer's existing frame camera)</td><td>FPGA latency fabric + any sensor the customer brings</td><td class="tie"><strong>Medium.</strong> Fabric is reusable; needs sensor-interface adaptation and a frame-camera ingest path.</td><td>High-speed autonomy / defense</td></tr>
+</table>
+<p><strong>Extraction guidance:</strong> A is a build-flag change, not a project. C is a sensor-swap plus interface work on an existing fabric. Do not engineer any variant ahead of a customer ask.</p>
+
+<h3>5.5 Go-to-market: pitch the full MVP, sell the configured product</h3>
+<p>The commercial strategy for the first customers is <strong>sell the flagship capability, then configure to the buyer's real need</strong>:</p>
+<ul>
+    <li><strong>Pitch the full product (B)</strong> — sub-ms determinism + HDR + SWaP — as the complete capability. It is the credibility proof and the thesis artifact.</li>
+    <li><strong>Let the first customers decide the variant</strong> — when a buyer says "we don't need sub-ms," "we have our own camera," or "we need it lighter/cheaper at 30 ms," drop the corresponding stage of the same build. No redesign.</li>
+    <li><strong>First-customer conversations de-risk the product line</strong> — they reveal which claims are actually paid for before any variant-specific engineering is invested.</li>
+    <li><strong>No upfront variant inventory</strong> — build B, pitch it everywhere, and let real demand trigger A or C.</li>
+</ul>
+<p>This mirrors a classic hardware halo strategy: the showcase product establishes the position and the technical proof; the configured variants capture revenue at the price the market will actually pay.</p>
+
 <h2>6. MVP Value Metrics</h2>
 
 <table>

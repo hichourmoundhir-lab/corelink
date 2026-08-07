@@ -264,6 +264,20 @@
 <h3>4.4 Safety boundary</h3>
 <p>Advisory messages are rate-limited and logged. In the MVP the autopilot or human operator decides whether to alter speed, position, or capture sequence; the system never directly commands flight controls. This keeps regulatory and liability burden out of the thesis scope.</p>
 
+<h3>4.5 Required hardware</h3>
+<table>
+    <tr><th>Item</th><th>Specification / part</th><th>Purpose</th></tr>
+    <tr><td>SoPC platform</td><td>AMD Kria K26 SOM (Zynq UltraScale+ class) + carrier board</td><td>Streaming FPGA fabric, ARM/Linux companion application, development path</td></tr>
+    <tr><td>Event camera</td><td>Prophesee GENX320 module (OpenMV), 320&times;320, &gt;140 dB HDR, sub-ms event latency (~$400)</td><td>Primary sensing; PL interface for streaming ingest</td></tr>
+    <tr><td>Frame-camera fallback</td><td>Low-cost global-shutter camera (e.g., OV9281/IMX219-class)</td><td>Software baseline and comparison path</td></tr>
+    <tr><td>Baseline accelerator (GPU)</td><td>NVIDIA Jetson-class (Orin Nano) + carrier</td><td>Fair latency/power/accuracy comparison</td></tr>
+    <tr><td>Baseline accelerator (NPU)</td><td>Hailo-8/8L M.2 + host (RPi 5)</td><td>Fair NPU comparison</td></tr>
+    <tr><td>Flight stack</td><td>PX4-compatible drone airframe with MAVLink companion-interface support</td><td>HIL/SITL and indoor VLOS flight validation</td></tr>
+    <tr><td>Ground equipment</td><td>Power measurement (in-line power monitor), oscilloscope/logic analyzer for timing capture, USB-UART</td><td>Latency/power evidence</td></tr>
+    <tr><td>Development tooling</td><td>Vitis HLS / Vitis (AMD), Vivado; VS Code / SDK; recorded-data replay harness</td><td>HLS+RTL build and validation</td></tr>
+</table>
+<p class="noindent">Note: development uses the production-oriented Kria-class SOM; a custom PCB is explicitly deferred until pilot/bench validation completes.</p>
+
 <h2>5. Control Engineering Core</h2>
 
 <h3>5.1 Latency-to-stability relationship</h3>
