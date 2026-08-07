@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoreLink — Sub-millisecond event vision for reactive drone control</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Scroll progress bar -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- Ambient background -->
+<div class="ambient" aria-hidden="true">
+  <div class="orb orb-a"></div>
+  <div class="orb orb-b"></div>
+  <div class="grid-overlay"></div>
+</div>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#top" class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="32" height="32" rx="9" fill="url(#brandGrad)"/>
+          <path d="M9 16h14M16 9v14" stroke="white" stroke-width="2.6" stroke-linecap="round"/>
+          <defs><linearGradient id="brandGrad" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#ff7a1a"/><stop offset="1" stop-color="#f05a00"/></linearGradient></defs>
+        </svg>
+      </span>
+      <span class="brand-name">CoreLink</span>
+    </a>
+    <nav class="nav-links">
+      <a href="#pipeline">Pipeline</a>
+      <a href="#features">Features</a>
+      <a href="#compare">Benchmark</a>
+      <a href="#how">How it works</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a href="#cta" class="btn btn-primary btn-sm">Request access</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-copy reveal">
+        <div class="badge">
+          <span class="pulse-dot"></span>
+          Companion perception for PX4 / ArduPilot
+        </div>
+        <h1>
+          Drones that <span class="grad-orange">react</span> in
+          <span class="grad-blue">microseconds</span>, not milliseconds.
+        </h1>
+        <p class="lead">
+          CoreLink is a streaming event-vision co-processor that gives autonomous
+          drones <strong>deterministic sub-millisecond perception</strong> — blur-free,
+          HDR, and immune to the jitter that breaks frame-based control loops.
+        </p>
+        <div class="hero-cta">
+          <a href="#cta" class="btn btn-primary">Talk to the team</a>
+          <a href="#pipeline" class="btn btn-ghost">See the pipeline
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat" data-count="99.5" data-decimals="1"><span class="stat-num">0</span><span class="stat-suffix">%</span><span class="stat-label">direction accuracy</span></div>
+          <div class="stat" data-count="0.14" data-decimals="2"><span class="stat-num">0</span><span class="stat-suffix">W</span><span class="stat-label">on-chip power</span></div>
+          <div class="stat" data-count="2" data-decimals="0"><span class="stat-num">0</span><span class="stat-suffix">ms</span><span class="stat-label">worst-case latency</span></div>
+        </div>
+      </div>
+
+      <div class="hero-visual reveal" data-delay="120">
+        <div class="chip-card">
+          <div class="chip-head">
+            <span class="chip-dots"><i></i><i></i><i></i></span>
+            <span>CoreLink · event pipeline</span>
+            <span class="live-tag"><span class="pulse-dot"></span> LIVE</span>
+          </div>
+          <div class="stream">
+            <div class="stream-row">
+              <span class="evt" style="--x:6%;--d:0s"></span>
+              <span class="evt" style="--x:22%;--d:.4s"></span>
+              <span class="evt" style="--x:41%;--d:.9s"></span>
+              <span class="evt" style="--x:63%;--d:.2s"></span>
+              <span class="evt" style="--x:78%;--d:1.3s"></span>
+              <span class="evt" style="--x:90%;--d:.6s"></span>
+              <span class="evt" style="--x:12%;--d:1.7s"></span>
+              <span class="evt" style="--x:52%;--d:2.1s"></span>
+              <span class="evt" style="--x:85%;--d:1.1s"></span>
+              <span class="evt" style="--x:33%;--d:2.6s"></span>
+            </div>
+            <div class="stream-guide">320×320 · &gt;140 dB HDR · EVT3</div>
+          </div>
+          <div class="flow">
+            <div class="flow-stage">
+              <b>PRE</b><span>filter</span>
+              <small>&lt;50 µs</small>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-stage">
+              <b>TS</b><span>surface</span>
+              <small>&lt;100 µs</small>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-stage">
+              <b>FLOW</b><span>optical</span>
+              <small>&lt;300 µs</small>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-stage">
+              <b>OCC</b><span>occupancy</span>
+              <small>&lt;200 µs</small>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-stage flow-stage--out">
+              <b>CBF</b><span>advisory</span>
+              <small>&lt;50 µs</small>
+            </div>
+          </div>
+          <div class="chip-foot">
+            <span>sensor → decision</span>
+            <span class="chip-total">≈ 1 ms</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-scroll">
+      <span>scroll</span>
+      <div class="mouse"><i></i></div>
+    </div>
+  </section>
+
+  <!-- ============ MARQUEE ============ -->
+  <div class="marquee">
+    <div class="marquee-track">
+      <span>POWER-LINE INSPECTION</span><i>◆</i>
+      <span>BVLOS</span><i>◆</i>
+      <span>CONFINED-SPACE NAVIGATION</span><i>◆</i>
+      <span>PRECISION LANDING</span><i>◆</i>
+      <span>HIGH-SPEED AUTONOMY</span><i>◆</i>
+      <span>POWER-LINE INSPECTION</span><i>◆</i>
+      <span>BVLOS</span><i>◆</i>
+      <span>CONFINED-SPACE NAVIGATION</span><i>◆</i>
+      <span>PRECISION LANDING</span><i>◆</i>
+      <span>HIGH-SPEED AUTONOMY</span><i>◆</i>
+    </div>
+  </div>
+
+  <!-- ============ PROBLEM ============ -->
+  <section class="section problem" id="problem">
+    <div class="section-inner">
+      <div class="section-head reveal">
+        <span class="kicker">The problem</span>
+        <h2>Frame-based perception is the ceiling on drone speed.</h2>
+        <p>Cameras blur at speed. GPUs and NPUs add 30–100 ms of queueing, batching, and driver latency. In feedback control, that delay is not an inconvenience — it is the stability margin.</p>
+      </div>
+      <div class="problem-grid">
+        <div class="problem-card reveal">
+          <div class="problem-icon">◐</div>
+          <h3>Motion blur</h3>
+          <p>Frame integration smears exactly the detail a reactive controller needs at the moment it matters most.</p>
+        </div>
+        <div class="problem-card reveal" data-delay="80">
+          <div class="problem-icon">∿</div>
+          <h3>Latency jitter</h3>
+          <p>GPU/NPU latency scales with batch and queue occupancy — unpredictable, and unfixable in software.</p>
+        </div>
+        <div class="problem-card reveal" data-delay="160">
+          <div class="problem-icon">◲</div>
+          <h3>Low dynamic range</h3>
+          <p>Sun, shadow, and glare — the places drones fail most are precisely where frame cameras clip.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PIPELINE (dark blue) ============ -->
+  <section class="section pipeline" id="pipeline">
+    <div class="section-inner">
+      <div class="section-head reveal">
+        <span class="kicker kicker--light">The pipeline</span>
+        <h2>A streaming fabric on the camera clock.</h2>
+        <p>Every stage is a hardware pipeline with a composable latency budget. Raw event traffic never touches software — only the low-rate advisory crosses into Linux.</p>
+      </div>
+      <div class="pipeline-list">
+        <div class="pl-stage reveal">
+          <span class="pl-num">01</span>
+          <div class="pl-body">
+            <h3>Event pre-processing</h3>
+            <p>Noise filtering, hot-pixel removal, timestamp synchronization.</p>
+          </div>
+          <span class="pl-lat">RTL · &lt;50 µs</span>
+        </div>
+        <div class="pl-stage reveal">
+          <span class="pl-num">02</span>
+          <div class="pl-body">
+            <h3>Time-surface accumulation</h3>
+            <p>Shift-based exponential time surfaces encode recency without frame reconstruction.</p>
+          </div>
+          <span class="pl-lat">HLS · &lt;100 µs</span>
+        </div>
+        <div class="pl-stage reveal">
+          <span class="pl-num">03</span>
+          <div class="pl-body">
+            <h3>Optical flow</h3>
+            <p>Integer-only streaming flow estimation — no DSPs, no floating point, no iterative solving.</p>
+          </div>
+          <span class="pl-lat">HLS · &lt;300 µs</span>
+        </div>
+        <div class="pl-stage reveal">
+          <span class="pl-num">04</span>
+          <div class="pl-body">
+            <h3>Occupancy / obstacle map</h3>
+            <p>Per-pixel occupancy with sweep-consistent worst-case timing under sustained load.</p>
+          </div>
+          <span class="pl-lat">HLS · &lt;200 µs</span>
+        </div>
+        <div class="pl-stage reveal">
+          <span class="pl-num">05</span>
+          <div class="pl-body">
+            <h3>CBF filter + advisory</h3>
+            <p>A control-barrier function encodes a brake/avoid advisory guaranteed from measured worst-case latency.</p>
+          </div>
+          <span class="pl-lat">ARM · &lt;50 µs</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FEATURES ============ -->
+  <section class="section features" id="features">
+    <div class="section-inner">
+      <div class="section-head reveal">
+        <span class="kicker">Why CoreLink</span>
+        <h2>Own the latency argument end-to-end.</h2>
+      </div>
+      <div class="feature-grid">
+        <div class="feature-card reveal">
+          <div class="feat-icon">⚡</div>
+          <h3>Deterministic sub-ms</h3>
+          <p>p99 ≈ max. Worst case is measured, cycle-accurate, and bounded — not averaged away.</p>
+        </div>
+        <div class="feature-card reveal" data-delay="60">
+          <div class="feat-icon">☀</div>
+          <h3>&gt;140 dB HDR</h3>
+          <p>Event pixels respond to change, not integration time. Sun glare and shadow stop being failures.</p>
+        </div>
+        <div class="feature-card reveal" data-delay="120">
+          <div class="feat-icon">▤</div>
+          <h3>Drop-in advisory</h3>
+          <p>MAVLink / ROS 2 out. Advisories only — never direct actuation. PX4 and ArduPilot ready.</p>
+        </div>
+        <div class="feature-card reveal" data-delay="0">
+          <div class="feat-icon">◌</div>
+          <h3>Low SWaP</h3>
+          <p>A $400 sensor on a Kria-class SOM — under 10 W, no host GPU, no NUC in the bay.</p>
+        </div>
+        <div class="feature-card reveal" data-delay="60">
+          <div class="feat-icon">◈</div>
+          <h3>HLS + RTL mix</h3>
+          <p>Software reference for every kernel — re-target between full streaming and ARM software builds.</p>
+        </div>
+        <div class="feature-card reveal" data-delay="120">
+          <div class="feat-icon">◎</div>
+          <h3>Event-native</h3>
+          <p>No frame reconstruction. The stream stays a stream from pixel to advisory.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COMPARE (dark blue) ============ -->
+  <section class="section compare" id="compare">
+    <div class="section-inner">
+      <div class="section-head reveal">
+        <span class="kicker kicker--light">Honest benchmark</span>
+        <h2>Where it wins. Where it loses.</h2>
+        <p>Same task, matched accuracy and input rate. The FPGA concedes TOPS/W — and owns the loop.</p>
+      </div>
+      <div class="compare-wrap reveal">
+        <div class="compare-table">
+          <div class="ct-row ct-head">
+            <div></div><div>CoreLink</div><div>Jetson-class GPU</div><div>Hailo-class NPU</div>
+          </div>
+          <div class="ct-row">
+            <div class="ct-label">End-to-end latency</div>
+            <div class="ct-cell ct-win"><b>&lt;2 ms</b><small>deterministic</small></div>
+            <div class="ct-cell ct-lose">30–100 ms<small>jittery</small></div>
+            <div class="ct-cell ct-lose">5–30 ms<small>batch-dependent</small></div>
+          </div>
+          <div class="ct-row">
+            <div class="ct-label">Under load</div>
+            <div class="ct-cell ct-win">Constant<small>streaming</small></div>
+            <div class="ct-cell ct-lose">Degrades<small>queue occupancy</small></div>
+            <div class="ct-cell ct-lose">Degrades<small>fragmentation</small></div>
+          </div>
+          <div class="ct-row">
+            <div class="ct-label">HDR / motion blur</div>
+            <div class="ct-cell ct-win">Event-native<small>no blur</small></div>
+            <div class="ct-cell ct-lose">Blur<small>rolling shutter</small></div>
+            <div class="ct-cell ct-lose">Frame-dependent<small>same as camera</small></div>
+          </div>
+          <div class="ct-row">
+            <div class="ct-label">Power</div>
+            <div class="ct-cell ct-win">Low<small>SoPC-class</small></div>
+            <div class="ct-cell ct-lose">High<small>W + cooling</small></div>
+            <div class="ct-cell ct-win">Very low<small>true win</small></div>
+          </div>
+          <div class="ct-row">
+            <div class="ct-label">TOPS/W fixed CNN</div>
+            <div class="ct-cell ct-lose">Loses<small>conceded</small></div>
+            <div class="ct-cell ct-lose">Loses</div>
+            <div class="ct-cell ct-win">Wins<small>true win</small></div>
+          </div>
+          <div class="ct-row ct-foot">
+            <div class="ct-label">Integration</div>
+            <div class="ct-cell ct-win">Drop-in advisory<small>ships as the loop</small></div>
+            <div class="ct-cell ct-neutral">Mature SDK<small>glue required</small></div>
+            <div class="ct-cell ct-neutral">Vendor toolchain<small>fixed graph</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HOW ============ -->
+  <section class="section how" id="how">
+    <div class="section-inner">
+      <div class="section-head reveal">
+        <span class="kicker">How it works</span>
+        <h2>From event to advisory in three lines.</h2>
+      </div>
+      <div class="how-grid">
+        <div class="how-step reveal">
+          <span class="how-num">1</span>
+          <h3>Sense</h3>
+          <p>GENX320 event sensor streams asynchronous change events at 320×320 with microsecond timestamps.</p>
+        </div>
+        <div class="how-step reveal" data-delay="80">
+          <span class="how-num">2</span>
+          <h3>Process</h3>
+          <p>The FPGA fabric filters, accumulates, and estimates flow entirely in hardware — on the camera clock.</p>
+        </div>
+        <div class="how-step reveal" data-delay="160">
+          <span class="how-num">3</span>
+          <h3>Advise</h3>
+          <p>A CBF safety filter emits brake / avoid advisories over MAVLink. The autopilot stays in command.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="section cta" id="cta">
+    <div class="cta-card reveal">
+      <div class="cta-orbs" aria-hidden="true"></div>
+      <span class="kicker kicker--light">Pilot program</span>
+      <h2>Fly your first mission with sub-ms perception.</h2>
+      <p>We're working with inspection service providers and integrators on paid pilots. Tell us your mission — we'll show the latency math.</p>
+      <div class="cta-actions">
+        <a href="mailto:hello@corelink.io" class="btn btn-primary">hello@corelink.io</a>
+        <a href="#top" class="btn btn-ghost btn-ghost--light">Back to top ↑</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="32" height="32" rx="9" fill="url(#brandGrad2)"/>
+          <path d="M9 16h14M16 9v14" stroke="white" stroke-width="2.6" stroke-linecap="round"/>
+          <defs><linearGradient id="brandGrad2" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#ff7a1a"/><stop offset="1" stop-color="#f05a00"/></linearGradient></defs>
+        </svg>
+      </span>
+      <p>Sub-millisecond event vision for reactive drone control. Advisor-only perception — the aircraft stays in command.</p>
+    </div>
+    <div class="footer-cols">
+      <div>
+        <h4>Product</h4>
+        <a href="#pipeline">Pipeline</a>
+        <a href="#features">Features</a>
+        <a href="#compare">Benchmark</a>
+        <a href="#how">How it works</a>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <a href="#problem">Problem</a>
+        <a href="#faq">FAQ</a>
+        <a href="#cta">Pilot program</a>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>© 2026 CoreLink. All rights reserved.</span>
+    <span>UI concept — not a live product.</span>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
