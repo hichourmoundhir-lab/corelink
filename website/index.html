@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CoreLink — Sub-millisecond event vision for reactive drone control</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -25,21 +26,14 @@
 <header class="nav" id="nav">
   <div class="nav-inner">
     <a href="#top" class="brand">
-      <span class="brand-mark">
-        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="32" height="32" rx="9" fill="url(#brandGrad)"/>
-          <path d="M9 16h14M16 9v14" stroke="white" stroke-width="2.6" stroke-linecap="round"/>
-          <defs><linearGradient id="brandGrad" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#ff7a1a"/><stop offset="1" stop-color="#f05a00"/></linearGradient></defs>
-        </svg>
-      </span>
-      <span class="brand-name">CoreLink</span>
+      <img class="brand-logo" src="assets/logo.svg" alt="CoreLink">
     </a>
     <nav class="nav-links">
+      <a href="#decompose">Core</a>
       <a href="#pipeline">Pipeline</a>
       <a href="#features">Features</a>
       <a href="#compare">Benchmark</a>
-      <a href="#how">How it works</a>
-      <a href="#faq">FAQ</a>
+      <a href="#problem">Problem</a>
     </nav>
     <a href="#cta" class="btn btn-primary btn-sm">Request access</a>
   </div>
@@ -66,7 +60,7 @@
         </p>
         <div class="hero-cta">
           <a href="#cta" class="btn btn-primary">Talk to the team</a>
-          <a href="#pipeline" class="btn btn-ghost">See the pipeline
+          <a href="#decompose" class="btn btn-ghost">Fly the demo
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
         </div>
@@ -155,6 +149,42 @@
     </div>
   </div>
 
+  <!-- ============ 3D DECOMPOSE (dark blue, scroll-scrubbed) ============ -->
+  <section class="decompose" id="decompose">
+    <div class="decomp-pin">
+      <canvas id="drone-canvas" aria-label="Interactive 3D drone decomposing into an FPGA chip"></canvas>
+
+      <div class="decomp-ui">
+        <div class="decomp-label" data-stage="0">
+          <span class="kicker kicker--light">The machine</span>
+          <h2>One stream. One decision.</h2>
+          <p>This is what a reactive drone sees — before it sees.</p>
+        </div>
+        <div class="decomp-label" data-stage="1">
+          <span class="kicker kicker--light">X-ray view</span>
+          <h2>Strip away the airframe.</h2>
+          <p>Rotor, arm, body — every moving part falls away. The flight is just a side effect.</p>
+        </div>
+        <div class="decomp-label" data-stage="2">
+          <span class="kicker kicker--light">The Core</span>
+          <h2>The chip underneath it all.</h2>
+          <p>An FPGA fabric turning photons into a braking decision in under a millisecond.</p>
+        </div>
+      </div>
+
+      <div class="decomp-hud">
+        <div class="hud-row"><span>STATUS</span><b id="hudStatus">LINK ACQUIRED</b></div>
+        <div class="hud-row"><span>LATENCY</span><b id="hudLatency">—</b></div>
+        <div class="hud-row"><span>MODULE</span><b id="hudModule">GENX320</b></div>
+      </div>
+
+      <div class="decomp-scrollhint" id="decompScrollhint">
+        <span>scroll to disassemble</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14m-6-6 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ PROBLEM ============ -->
   <section class="section problem" id="problem">
     <div class="section-inner">
@@ -183,11 +213,11 @@
     </div>
   </section>
 
-  <!-- ============ PIPELINE (dark blue) ============ -->
+  <!-- ============ PIPELINE ============ -->
   <section class="section pipeline" id="pipeline">
     <div class="section-inner">
       <div class="section-head reveal">
-        <span class="kicker kicker--light">The pipeline</span>
+        <span class="kicker">The pipeline</span>
         <h2>A streaming fabric on the camera clock.</h2>
         <p>Every stage is a hardware pipeline with a composable latency budget. Raw event traffic never touches software — only the low-rate advisory crosses into Linux.</p>
       </div>
@@ -278,18 +308,18 @@
     </div>
   </section>
 
-  <!-- ============ COMPARE (dark blue) ============ -->
+  <!-- ============ COMPARE ============ -->
   <section class="section compare" id="compare">
     <div class="section-inner">
       <div class="section-head reveal">
-        <span class="kicker kicker--light">Honest benchmark</span>
+        <span class="kicker">Honest benchmark</span>
         <h2>Where it wins. Where it loses.</h2>
         <p>Same task, matched accuracy and input rate. The FPGA concedes TOPS/W — and owns the loop.</p>
       </div>
       <div class="compare-wrap reveal">
         <div class="compare-table">
           <div class="ct-row ct-head">
-            <div></div><div>CoreLink</div><div>Jetson-class GPU</div><div>Hailo-class NPU</div>
+            <div></div><div><img src="assets/logo-mark.svg" alt="CoreLink" class="ct-logo"> CoreLink</div><div>Jetson GPU</div><div>Hailo NPU</div>
           </div>
           <div class="ct-row">
             <div class="ct-label">End-to-end latency</div>
@@ -332,33 +362,6 @@
     </div>
   </section>
 
-  <!-- ============ HOW ============ -->
-  <section class="section how" id="how">
-    <div class="section-inner">
-      <div class="section-head reveal">
-        <span class="kicker">How it works</span>
-        <h2>From event to advisory in three lines.</h2>
-      </div>
-      <div class="how-grid">
-        <div class="how-step reveal">
-          <span class="how-num">1</span>
-          <h3>Sense</h3>
-          <p>GENX320 event sensor streams asynchronous change events at 320×320 with microsecond timestamps.</p>
-        </div>
-        <div class="how-step reveal" data-delay="80">
-          <span class="how-num">2</span>
-          <h3>Process</h3>
-          <p>The FPGA fabric filters, accumulates, and estimates flow entirely in hardware — on the camera clock.</p>
-        </div>
-        <div class="how-step reveal" data-delay="160">
-          <span class="how-num">3</span>
-          <h3>Advise</h3>
-          <p>A CBF safety filter emits brake / avoid advisories over MAVLink. The autopilot stays in command.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- ============ CTA ============ -->
   <section class="section cta" id="cta">
     <div class="cta-card reveal">
@@ -379,27 +382,20 @@
 <footer class="footer">
   <div class="footer-inner">
     <div class="footer-brand">
-      <span class="brand-mark">
-        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="32" height="32" rx="9" fill="url(#brandGrad2)"/>
-          <path d="M9 16h14M16 9v14" stroke="white" stroke-width="2.6" stroke-linecap="round"/>
-          <defs><linearGradient id="brandGrad2" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#ff7a1a"/><stop offset="1" stop-color="#f05a00"/></linearGradient></defs>
-        </svg>
-      </span>
+      <img class="brand-logo brand-logo--light" src="assets/logo.svg" alt="CoreLink">
       <p>Sub-millisecond event vision for reactive drone control. Advisor-only perception — the aircraft stays in command.</p>
     </div>
     <div class="footer-cols">
       <div>
         <h4>Product</h4>
+        <a href="#decompose">Core</a>
         <a href="#pipeline">Pipeline</a>
-        <a href="#features">Features</a>
         <a href="#compare">Benchmark</a>
-        <a href="#how">How it works</a>
       </div>
       <div>
         <h4>Company</h4>
         <a href="#problem">Problem</a>
-        <a href="#faq">FAQ</a>
+        <a href="#features">Features</a>
         <a href="#cta">Pilot program</a>
       </div>
       <div>
@@ -415,6 +411,8 @@
   </div>
 </footer>
 
+<script src="vendor/three.min.js"></script>
+<script src="drone.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 64" width="220" height="64">
+  <defs>
+    <linearGradient id="clTile2" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1a3bb0"/>
+      <stop offset="1" stop-color="#0d1a4d"/>
+    </linearGradient>
+    <linearGradient id="clOrange2" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ff8a3d"/>
+      <stop offset="1" stop-color="#f05a00"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#clTile2)"/>
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
+  <path d="M44 17 A15.5 15.5 0 1 0 44 47"
+        fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="31.5" cy="32" r="6" fill="url(#clOrange2)"/>
+  <circle cx="31.5" cy="32" r="6" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="1.4"/>
+  <path d="M44 28 L44 36" stroke="#ff8a3d" stroke-width="4.5" stroke-linecap="round"/>
+  <path d="M41 32 L47 32" stroke="#ff8a3d" stroke-width="4.5" stroke-linecap="round"/>
+
+  <!-- Wordmark -->
+  <text x="76" y="44" font-family="'Space Grotesk','Inter',system-ui,sans-serif"
+        font-size="34" font-weight="700" fill="#0d1a4d" letter-spacing="-1">
+    Core<tspan fill="#f05a00">Link</tspan>
+  </text>
+</svg>
