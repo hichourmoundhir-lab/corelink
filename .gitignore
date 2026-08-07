@@ -1,0 +1,9 @@
+docs/
+src/
+data/
+*.pdf
+*.docx
+__pycache__/
+*.pyc
+.vscode/
+.idea/
