@@ -14,7 +14,7 @@ Master's thesis at the intersection of computer engineering, control engineering
 ## Repository Layout
 
 ```
-docs/                  Thesis proposal/spec and market/product blueprint (print-ready HTML)
+docs/                  Thesis proposal/spec, roadmap, related work, and market/product blueprint
 src/hls/               Vitis HLS kernels (event accumulation, optical flow, occupancy map)
 src/rtl/               RTL streaming fabric, AXI interfaces, timing-critical paths
 src/software/          ARM/Linux companion app, PX4/MAVLink bridge, HIL harness
@@ -25,9 +25,9 @@ data/benchmarks/       Jetson / Hailo-class NPU comparison results
 
 ## Documents
 
-- `docs/thesis_proposal.html` — Thesis proposal & technical specification
-- `docs/thesis_proposal_2pager.md` — 2-page teacher-facing proposal (PDF in `docs/`)
-- `docs/market_blueprint.html` — Market & product blueprint (MVP, competition, GTM)
+- `docs/thesis_proposal.md` — Thesis proposal & technical specification
+- `docs/thesis_proposal_2pager.md` — 2-page teacher-facing proposal
+- `docs/market_blueprint.md` — Market & product blueprint (MVP, competition, GTM)
 - `docs/roadmap.md` — Phase A–E plan with evidence gates and critical path
 - `docs/related_work.md` — Surveyed papers, read-first order, 8-point gap analysis
 
