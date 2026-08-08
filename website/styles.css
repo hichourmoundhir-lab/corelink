@@ -41,6 +41,11 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+main {
+  position: relative;
+  z-index: 2;
+}
+
 ::selection { background: var(--orange); color: #fff; }
 
 img { max-width: 100%; display: block; }
@@ -501,7 +506,8 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* ---------- Sections (shared) ---------- */
-.section { padding: 120px 32px; position: relative; }
+.section { padding: 90px 32px 110px; position: relative; }
+.section .glass + .glass { margin-top: 0; }
 .section-inner {
   max-width: 1160px;
   margin: 0 auto;
@@ -529,18 +535,21 @@ a { color: inherit; text-decoration: none; }
 .kicker--light { color: var(--orange-bright); }
 
 /* =========================================================
-   3D DECOMPOSE — scroll-scrubbed drone → FPGA chip
+   3D SCENE — fixed full-viewport background, never scrolls
+   Content panels scroll UP over it (scroll-over style).
    ========================================================= */
-.decompose {
-  position: relative;
-  height: 320vh;
+.scene-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
   background:
-    radial-gradient(ellipse 70% 45% at 50% 12%, rgba(26, 59, 176, .08), transparent 60%),
-    radial-gradient(ellipse 55% 50% at 82% 88%, rgba(255, 122, 26, .06), transparent 60%),
+    radial-gradient(ellipse 75% 60% at 50% 42%, rgba(26, 59, 176, .18), transparent 65%),
+    radial-gradient(ellipse 45% 40% at 82% 88%, rgba(255, 122, 26, .10), transparent 60%),
     linear-gradient(180deg, var(--white) 0%, var(--bg-soft) 100%);
-  color: var(--ink);
 }
-.decompose::before {
+.scene-bg::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -552,14 +561,8 @@ a { color: inherit; text-decoration: none; }
   -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 45%, black, transparent 85%);
   pointer-events: none;
 }
-.decomp-pin {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  overflow: hidden;
-}
-.decompose.no-webgl #drone-canvas { display: none; }
-.decompose.no-webgl .decomp-pin::after {
+.scene-bg.no-webgl #drone-canvas { display: none; }
+.scene-bg.no-webgl::after {
   content: "3D preview unavailable in this browser — WebGL is required.";
   position: absolute;
   inset: 0;
@@ -579,40 +582,8 @@ a { color: inherit; text-decoration: none; }
   display: block;
 }
 
-.decomp-ui {
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  padding: 110px 6vw 0;
-  display: flex;
-  justify-content: center;
-  pointer-events: none;
-  text-align: center;
-  z-index: 3;
-}
-.decomp-label {
-  position: absolute;
-  max-width: 640px;
-  opacity: 0;
-  transform: translateY(18px);
-  transition: opacity .6s ease, transform .6s ease;
-}
-.decomp-label.active { opacity: 1; transform: translateY(0); }
-.decomp-label h2 {
-  font-family: var(--font-head);
-  font-weight: 700;
-  font-size: clamp(28px, 3.6vw, 44px);
-  line-height: 1.08;
-  letter-spacing: -.02em;
-  color: var(--ink);
-  margin-bottom: 12px;
-}
-.decomp-label p {
-  color: var(--ink-soft);
-  font-size: 16px;
-}
-
-/* HUD */
-.decomp-hud {
+/* HUD pinned to scene (always visible over bg) */
+.scene-hud {
   position: absolute;
   right: 4vw;
   bottom: 42px;
@@ -624,13 +595,16 @@ a { color: inherit; text-decoration: none; }
   letter-spacing: .14em;
   z-index: 3;
   text-align: right;
+  opacity: 0;
+  animation: hudIn 1s .6s ease forwards;
 }
+@keyframes hudIn { to { opacity: 1; } }
 .hud-row { display: flex; gap: 14px; justify-content: space-between; align-items: baseline; }
 .hud-row span { color: var(--ink-soft); }
 .hud-row b { color: var(--orange); font-weight: 600; }
 
-/* scroll hint */
-.decomp-scrollhint {
+/* scroll hint pinned to scene */
+.scene-scrollhint {
   position: absolute;
   left: 50%;
   bottom: 42px;
@@ -645,13 +619,32 @@ a { color: inherit; text-decoration: none; }
   color: var(--ink-soft);
   z-index: 3;
   transition: opacity .5s ease;
+  opacity: 0;
+  animation: hudIn 1s 1.2s ease forwards;
 }
-.decomp-scrollhint svg { animation: hintbounce 1.8s ease-in-out infinite; }
+.scene-scrollhint svg { animation: hintbounce 1.8s ease-in-out infinite; }
 @keyframes hintbounce {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(8px); }
 }
-.decomp-scrollhint.hidden { opacity: 0; }
+.scene-scrollhint.hidden { opacity: 0; animation: none; }
+
+/* =========================================================
+   Glass content panels — scroll UP over the fixed 3D scene
+   ========================================================= */
+.glass {
+  background: rgba(255, 255, 255, .66);
+  backdrop-filter: blur(22px) saturate(140%);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, .85);
+  border-radius: 26px;
+  box-shadow: 0 30px 80px -40px rgba(12, 26, 74, .45);
+}
+.section.glass {
+  max-width: 1240px;
+  margin: 0 auto 34px;
+  padding: 90px 56px 96px;
+}
 
 /* ---------- Problem ---------- */
 .problem-grid {
@@ -689,9 +682,6 @@ a { color: inherit; text-decoration: none; }
 .problem-card p { color: var(--ink-soft); font-size: 15px; }
 
 /* ---------- Pipeline (white) ---------- */
-.pipeline {
-  background: var(--bg-soft);
-}
 .pipeline-list {
   display: flex;
   flex-direction: column;
@@ -890,6 +880,8 @@ a { color: inherit; text-decoration: none; }
 
 /* ---------- Footer ---------- */
 .footer {
+  position: relative;
+  z-index: 2;
   background: var(--blue-deep);
   color: rgba(255, 255, 255, .75);
   margin-top: 40px;
@@ -952,11 +944,11 @@ a { color: inherit; text-decoration: none; }
   .ct-label { grid-column: 1 / -1; border-bottom: 1px dashed var(--line); padding-bottom: 8px; }
   .pl-stage { grid-template-columns: 54px 1fr; }
   .pl-lat { grid-column: 2; width: fit-content; }
-  .decomp-hud { display: none; }
+  .scene-hud { display: none; }
 }
 
 @media (max-width: 640px) {
-  .section { padding: 80px 20px; }
+  .section { padding: 70px 20px 80px; }
   .nav-links { display: none; }
   .problem-grid, .feature-grid { grid-template-columns: 1fr; }
   .hero-stats { gap: 24px; flex-wrap: wrap; }
@@ -966,5 +958,5 @@ a { color: inherit; text-decoration: none; }
   .cta-card { padding: 60px 24px; }
   .footer-inner { grid-template-columns: 1fr; }
   .footer-cols { grid-template-columns: 1fr; }
-  .decompose { height: 360vh; }
+  .scene-scrollhint { display: none; }
 }

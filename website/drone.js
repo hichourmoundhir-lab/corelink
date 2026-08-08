@@ -1,18 +1,18 @@
 /* =========================================================
-   CoreLink — 3D scroll-scrubbed drone → FPGA chip
-   Scroll down the #decompose section to fly, then disassemble
-   the airframe and reveal the chip underneath.
+   CoreLink — fixed full-viewport 3D background
+   The drone / FPGA-chip scene never scrolls. It is pinned
+   behind the page and driven by overall scroll progress,
+   while content panels scroll up over it.
    ========================================================= */
 
 (function () {
   "use strict";
 
-  var section = document.getElementById("decompose");
+  var sceneBg = document.getElementById("sceneBg");
   var canvas = document.getElementById("drone-canvas");
-  if (!section || !canvas || typeof THREE === "undefined") return;
+  if (!sceneBg || !canvas || typeof THREE === "undefined") return;
 
-  var labels = Array.prototype.slice.call(document.querySelectorAll(".decomp-label"));
-  var scrollHint = document.getElementById("decompScrollhint");
+  var scrollHint = document.getElementById("sceneScrollhint");
   var hudStatus = document.getElementById("hudStatus");
   var hudLatency = document.getElementById("hudLatency");
   var hudModule = document.getElementById("hudModule");
@@ -26,7 +26,7 @@
       alpha: true
     });
   } catch (e) {
-    section.classList.add("no-webgl");
+    sceneBg.classList.add("no-webgl");
     return;
   }
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -39,14 +39,18 @@
   camera.lookAt(0, 0, 0);
 
   /* ---------- lights ---------- */
-  var hemi = new THREE.HemisphereLight(0xdfe8ff, 0x0a1842, 0.7);
+  var hemi = new THREE.HemisphereLight(0xdfe8ff, 0x0a1842, 0.8);
   scene.add(hemi);
 
-  var key = new THREE.DirectionalLight(0xffffff, 0.9);
+  var key = new THREE.DirectionalLight(0xffffff, 0.95);
   key.position.set(4, 8, 6);
   scene.add(key);
 
-  var blueFill = new THREE.DirectionalLight(0x1a3bb0, 0.55);
+  var rim = new THREE.DirectionalLight(0x9fc0ff, 0.9);
+  rim.position.set(-6, 2, -5);
+  scene.add(rim);
+
+  var blueFill = new THREE.DirectionalLight(0x1a3bb0, 0.45);
   blueFill.position.set(-5, -2, -4);
   scene.add(blueFill);
 
@@ -85,18 +89,15 @@
     return mesh;
   }
 
-  /* central body */
   var body = addPart(new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.34, 1.5), matBody), "body", "body");
   var topPlate = addPart(new THREE.Mesh(new THREE.BoxGeometry(0.82, 0.1, 0.82), matBodyDark), "topPlate", "top");
   topPlate.position.y = 0.22;
   var belly = addPart(new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.12, 0.9), matDark), "belly", "belly");
   belly.position.y = -0.22;
 
-  /* core node on top (orange) — the event sensor */
   var sensor = addPart(new THREE.Mesh(new THREE.SphereGeometry(0.16, 24, 24), matAccent), "sensor", "sensor");
   sensor.position.y = 0.36;
 
-  /* camera puck (below, facing forward = -z) */
   var camHousing = addPart(new THREE.Mesh(new THREE.SphereGeometry(0.22, 20, 20), matGlass), "camHousing", "cam");
   camHousing.position.set(0, -0.34, 0.55);
   camHousing.scale.set(1, 0.6, 0.8);
@@ -104,7 +105,6 @@
   camLens.rotation.x = Math.PI / 2;
   camLens.position.set(0, -0.34, 0.42);
 
-  /* four arms + motors + rotors */
   var armDefs = [
     { ang: Math.PI * 0.25, len: 1.35 },
     { ang: Math.PI * 0.75, len: 1.35 },
@@ -143,7 +143,6 @@
     arms.push(mesh);
   });
 
-  /* landing skids */
   var skidA = addPart(new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.07, 0.1), matDark), "skidA", "skid");
   skidA.position.set(0, -0.46, 0.42);
   var skidB = skidA.clone();
@@ -152,7 +151,6 @@
   skidB.position.set(0, -0.46, -0.42);
   drone.add(skidB);
 
-  /* re-snapshot base transforms after all initial positions/rotations are set */
   drone.children.forEach(function (p) {
     p.userData.basePos = p.position.clone();
     p.userData.baseQuat = p.quaternion.clone();
@@ -192,7 +190,6 @@
   var dieGlow = scatter(new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.03, 1.0), matGlow), 7);
   dieGlow.position.y = 0.24;
 
-  /* gold pins around the die */
   var pinPositions = [];
   for (var i = 0; i < 6; i++) {
     pinPositions.push(new THREE.Vector3(-0.55, 0.06, -0.6 + i * 0.24));
@@ -206,7 +203,6 @@
     pin.userData.basePos = pin.position.clone();
   });
 
-  /* glowing core on the die */
   var core = scatter(new THREE.Mesh(new THREE.SphereGeometry(0.16, 20, 20), matGlow), 6);
   core.position.y = 0.34;
   core.userData.isCore = true;
@@ -215,7 +211,6 @@
   chipSpot.position.set(0, 1.2, 1.6);
   scene.add(chipSpot);
 
-  /* ground glow ring under drone */
   var droneRing = new THREE.Mesh(
     new THREE.RingGeometry(2.0, 2.12, 48),
     new THREE.MeshBasicMaterial({ color: 0xff7a1a, transparent: true, opacity: 0.28, side: THREE.DoubleSide })
@@ -224,7 +219,6 @@
   droneRing.position.y = -0.55;
   scene.add(droneRing);
 
-  /* ground glow ring under chip */
   var ring = new THREE.Mesh(
     new THREE.RingGeometry(1.7, 1.86, 48),
     new THREE.MeshBasicMaterial({ color: 0xff7a1a, transparent: true, opacity: 0.18, side: THREE.DoubleSide })
@@ -251,7 +245,7 @@
   }
 
   /* =========================================================
-     Scroll scrub
+     Scroll scrub — whole-page progress
      ========================================================= */
   var progress = 0;      // eased
   var target = 0;
@@ -263,7 +257,6 @@
 
   function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
 
-  /* keyframe helper: value between t0..t1 (in-out across 0..1) */
   function key(start, end, p) {
     if (p <= start) return 0;
     if (p >= end) return 1;
@@ -275,27 +268,29 @@
   }
 
   function getProgress() {
-    var rect = section.getBoundingClientRect();
-    var total = rect.height - window.innerHeight;
-    if (total <= 0) return 0;
-    return clamp01(-rect.top / total);
+    var doc = document.documentElement;
+    var max = doc.scrollHeight - window.innerHeight;
+    if (max <= 0) return 0;
+    return clamp01(window.scrollY / max);
   }
 
-  /* UI stage labels */
-  function updateLabels(p) {
-    var stage = p < 0.32 ? 0 : (p < 0.62 ? 1 : 2);
-    labels.forEach(function (el, i) {
-      el.classList.toggle("active", i === stage);
-    });
-    if (stage > 0) scrollHint.classList.add("hidden");
-    else scrollHint.classList.remove("hidden");
+  /* UI HUD stages */
+  function updateHud(p) {
+    var stage = p < 0.12 ? 0 : (p < 0.42 ? 1 : 2);
+    if (p < 0.04) {
+      scrollHint.classList.remove("hidden");
+    } else {
+      scrollHint.classList.add("hidden");
+    }
 
-    if (p < 0.32) {
+    if (stage === 0) {
       hudStatus.textContent = "LINK ACQUIRED";
       hudLatency.textContent = "LIVE · —";
-    } else if (p < 0.62) {
+      hudModule.textContent = "GENX320";
+    } else if (stage === 1) {
       hudStatus.textContent = "DISASSEMBLING";
       hudLatency.textContent = "X-RAY";
+      hudModule.textContent = "GENX320";
     } else {
       hudStatus.textContent = "CORE EXPOSED";
       hudLatency.textContent = "<1 MS";
@@ -304,14 +299,14 @@
   }
 
   function update(dt) {
-    /* smooth follow */
     progress += (target - progress) * Math.min(1, dt * 3.2);
     var p = progress;
+    var t = clock.getElapsedTime();
 
     /* --- DRONE state --- */
-    var decompose = key(0.16, 0.48, p);  // parts fly apart
-    var vanish = key(0.42, 0.6, p);      // drone fades out
-    drone.visible = p < 0.66;
+    var decompose = key(0.10, 0.38, p);   // parts fly apart
+    var vanish = key(0.30, 0.50, p);      // drone fades out
+    drone.visible = p < 0.56;
     if (drone.visible) {
       drone.traverse(function (o) {
         if (o.isMesh && o.material.transparent) o.material.opacity = 0.55 * (1 - vanish);
@@ -319,10 +314,9 @@
     }
 
     var rotY = p * Math.PI * 1.6;
-    var bob = Math.sin(clock.getElapsedTime() * 1.6) * 0.09;
+    var bob = Math.sin(t * 1.6) * 0.09;
     var wholeQuat = new THREE.Quaternion().setFromEuler(new THREE.Euler(0, rotY * 0.5, 0));
 
-    /* per-part decompose offsets */
     var decStrength = decompose;
     var parts = drone.children;
     parts.forEach(function (part) {
@@ -333,7 +327,6 @@
       var kind = part.userData.kind;
 
       if (kind === "arm") {
-        /* arm assemblies slide outward along their axis and tilt */
         var ang = part.userData.armAngle;
         pos.x += Math.cos(ang) * decStrength * 2.6;
         pos.z += Math.sin(ang) * decStrength * 2.6;
@@ -341,10 +334,9 @@
         q.multiply(new THREE.Quaternion().setFromEuler(new THREE.Euler(
           decStrength * 0.5, 0, decStrength * 0.9
         )));
-        /* rotors spin up inside the arm */
         var rotor = part.userData.rotor;
         if (rotor) {
-          rotor.rotation.y = clock.getElapsedTime() * 40 + decStrength * 6;
+          rotor.rotation.y = t * 40 + decStrength * 6;
           rotor.position.y = 0.13 + decStrength * 0.9;
         }
       } else if (kind === "sensor") {
@@ -361,7 +353,6 @@
       } else if (kind === "skid") {
         pos.y -= decStrength * 2.0;
       } else {
-        /* body */
         pos.y -= decStrength * 0.4;
         q.multiply(new THREE.Quaternion().setFromEuler(new THREE.Euler(0, 0, decStrength * 0.5)));
       }
@@ -374,17 +365,17 @@
     drone.quaternion.copy(wholeQuat);
 
     /* --- CHIP state --- */
-    var assemble = key(0.52, 0.82, p);
-    var glowPulse = 0.5 + 0.5 * Math.sin(clock.getElapsedTime() * 3.4);
+    var assemble = key(0.44, 0.74, p);
+    var glowPulse = 0.5 + 0.5 * Math.sin(t * 3.4);
 
     chip.visible = assemble > 0.001;
     if (chip.visible) {
       chip.quaternion.copy(new THREE.Quaternion().setFromEuler(new THREE.Euler(
-        Math.sin(clock.getElapsedTime() * 0.5) * 0.12,
+        Math.sin(t * 0.5) * 0.12,
         p * Math.PI * 2.2,
-        Math.cos(clock.getElapsedTime() * 0.4) * 0.08
+        Math.cos(t * 0.4) * 0.08
       )));
-      chip.position.y = Math.sin(clock.getElapsedTime() * 1.1) * 0.06 * assemble;
+      chip.position.y = Math.sin(t * 1.1) * 0.06 * assemble;
 
       chipParts.forEach(function (part) {
         var bq = part.userData.baseQuat;
@@ -406,21 +397,21 @@
       chipSpot.intensity = 0;
     }
 
-    /* sparks always drift, stronger when chip assembled */
+    /* sparks */
     var sparkOn = assemble;
     sparks.forEach(function (sp) {
-      var t = clock.getElapsedTime() * sp.userData.speed + sp.userData.phase;
+      var st = t * sp.userData.speed + sp.userData.phase;
       var r = sp.userData.radius;
       sp.position.set(
-        Math.cos(t) * r,
-        sp.userData.lift + Math.sin(t * 1.7) * 0.5,
-        Math.sin(t) * r
+        Math.cos(st) * r,
+        sp.userData.lift + Math.sin(st * 1.7) * 0.5,
+        Math.sin(st) * r
       );
-      sp.material.opacity = sparkOn * 0.8 * (0.5 + 0.5 * Math.sin(t * 3));
+      sp.material.opacity = sparkOn * 0.8 * (0.5 + 0.5 * Math.sin(st * 3));
       sp.visible = sparkOn > 0.05;
     });
 
-    /* camera gentle scroll sway */
+    /* camera sway */
     camera.position.x = Math.sin(p * Math.PI * 2) * 0.7;
     camera.position.y = 1.1 + Math.sin(p * Math.PI * 1.4) * 0.35;
     camera.lookAt(0, 0, 0);
@@ -437,10 +428,9 @@
 
   function onScroll() {
     target = getProgress();
-    updateLabels(target);
+    updateHud(target);
   }
 
-  /* ---------- resize ---------- */
   function onResize() {
     var w = canvas.clientWidth;
     var h = canvas.clientHeight;
@@ -455,21 +445,4 @@
   onResize();
   onScroll();
   loop();
-
-  /* stop when section leaves viewport entirely */
-  var inView = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      if (entry.isIntersecting) {
-        if (!running) {
-          running = true;
-          clock.getDelta();
-          loop();
-        }
-      } else {
-        running = false;
-        if (rafId) cancelAnimationFrame(rafId);
-      }
-    });
-  }, { threshold: 0 });
-  inView.observe(section);
 })();

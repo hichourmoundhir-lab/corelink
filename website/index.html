@@ -15,11 +15,20 @@
 <!-- Scroll progress bar -->
 <div class="scroll-progress" id="scrollProgress"></div>
 
-<!-- Ambient background -->
-<div class="ambient" aria-hidden="true">
-  <div class="orb orb-a"></div>
-  <div class="orb orb-b"></div>
-  <div class="grid-overlay"></div>
+<!-- ============ FIXED 3D BACKGROUND (never scrolls) ============ -->
+<div class="scene-bg" id="sceneBg">
+  <canvas id="drone-canvas" aria-label="CoreLink 3D scene — drone decomposing into an FPGA chip"></canvas>
+
+  <div class="scene-hud">
+    <div class="hud-row"><span>STATUS</span><b id="hudStatus">LINK ACQUIRED</b></div>
+    <div class="hud-row"><span>LATENCY</span><b id="hudLatency">—</b></div>
+    <div class="hud-row"><span>MODULE</span><b id="hudModule">GENX320</b></div>
+  </div>
+
+  <div class="scene-scrollhint" id="sceneScrollhint">
+    <span>scroll</span>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14m-6-6 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
 </div>
 
 <!-- ============ NAV ============ -->
@@ -29,7 +38,6 @@
       <img class="brand-logo" src="assets/logo.svg" alt="CoreLink">
     </a>
     <nav class="nav-links">
-      <a href="#decompose">Core</a>
       <a href="#pipeline">Pipeline</a>
       <a href="#features">Features</a>
       <a href="#compare">Benchmark</a>
@@ -42,7 +50,7 @@
 <main id="top">
 
   <!-- ============ HERO ============ -->
-  <section class="hero">
+  <section class="hero glass">
     <div class="hero-inner">
       <div class="hero-copy reveal">
         <div class="badge">
@@ -60,7 +68,7 @@
         </p>
         <div class="hero-cta">
           <a href="#cta" class="btn btn-primary">Talk to the team</a>
-          <a href="#decompose" class="btn btn-ghost">Fly the demo
+          <a href="#pipeline" class="btn btn-ghost">See the pipeline
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
         </div>
@@ -133,88 +141,8 @@
     </div>
   </section>
 
-  <!-- ============ MARQUEE ============ -->
-  <div class="marquee">
-    <div class="marquee-track">
-      <span>POWER-LINE INSPECTION</span><i>◆</i>
-      <span>BVLOS</span><i>◆</i>
-      <span>CONFINED-SPACE NAVIGATION</span><i>◆</i>
-      <span>PRECISION LANDING</span><i>◆</i>
-      <span>HIGH-SPEED AUTONOMY</span><i>◆</i>
-      <span>POWER-LINE INSPECTION</span><i>◆</i>
-      <span>BVLOS</span><i>◆</i>
-      <span>CONFINED-SPACE NAVIGATION</span><i>◆</i>
-      <span>PRECISION LANDING</span><i>◆</i>
-      <span>HIGH-SPEED AUTONOMY</span><i>◆</i>
-    </div>
-  </div>
-
-  <!-- ============ 3D DECOMPOSE (dark blue, scroll-scrubbed) ============ -->
-  <section class="decompose" id="decompose">
-    <div class="decomp-pin">
-      <canvas id="drone-canvas" aria-label="Interactive 3D drone decomposing into an FPGA chip"></canvas>
-
-      <div class="decomp-ui">
-        <div class="decomp-label" data-stage="0">
-          <span class="kicker kicker--light">The machine</span>
-          <h2>One stream. One decision.</h2>
-          <p>This is what a reactive drone sees — before it sees.</p>
-        </div>
-        <div class="decomp-label" data-stage="1">
-          <span class="kicker kicker--light">X-ray view</span>
-          <h2>Strip away the airframe.</h2>
-          <p>Rotor, arm, body — every moving part falls away. The flight is just a side effect.</p>
-        </div>
-        <div class="decomp-label" data-stage="2">
-          <span class="kicker kicker--light">The Core</span>
-          <h2>The chip underneath it all.</h2>
-          <p>An FPGA fabric turning photons into a braking decision in under a millisecond.</p>
-        </div>
-      </div>
-
-      <div class="decomp-hud">
-        <div class="hud-row"><span>STATUS</span><b id="hudStatus">LINK ACQUIRED</b></div>
-        <div class="hud-row"><span>LATENCY</span><b id="hudLatency">—</b></div>
-        <div class="hud-row"><span>MODULE</span><b id="hudModule">GENX320</b></div>
-      </div>
-
-      <div class="decomp-scrollhint" id="decompScrollhint">
-        <span>scroll to disassemble</span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14m-6-6 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ PROBLEM ============ -->
-  <section class="section problem" id="problem">
-    <div class="section-inner">
-      <div class="section-head reveal">
-        <span class="kicker">The problem</span>
-        <h2>Frame-based perception is the ceiling on drone speed.</h2>
-        <p>Cameras blur at speed. GPUs and NPUs add 30–100 ms of queueing, batching, and driver latency. In feedback control, that delay is not an inconvenience — it is the stability margin.</p>
-      </div>
-      <div class="problem-grid">
-        <div class="problem-card reveal">
-          <div class="problem-icon">◐</div>
-          <h3>Motion blur</h3>
-          <p>Frame integration smears exactly the detail a reactive controller needs at the moment it matters most.</p>
-        </div>
-        <div class="problem-card reveal" data-delay="80">
-          <div class="problem-icon">∿</div>
-          <h3>Latency jitter</h3>
-          <p>GPU/NPU latency scales with batch and queue occupancy — unpredictable, and unfixable in software.</p>
-        </div>
-        <div class="problem-card reveal" data-delay="160">
-          <div class="problem-icon">◲</div>
-          <h3>Low dynamic range</h3>
-          <p>Sun, shadow, and glare — the places drones fail most are precisely where frame cameras clip.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- ============ PIPELINE ============ -->
-  <section class="section pipeline" id="pipeline">
+  <section class="section pipeline glass" id="pipeline">
     <div class="section-inner">
       <div class="section-head reveal">
         <span class="kicker">The pipeline</span>
@@ -267,7 +195,7 @@
   </section>
 
   <!-- ============ FEATURES ============ -->
-  <section class="section features" id="features">
+  <section class="section features glass" id="features">
     <div class="section-inner">
       <div class="section-head reveal">
         <span class="kicker">Why CoreLink</span>
@@ -308,8 +236,36 @@
     </div>
   </section>
 
+  <!-- ============ PROBLEM ============ -->
+  <section class="section problem glass" id="problem">
+    <div class="section-inner">
+      <div class="section-head reveal">
+        <span class="kicker">The problem</span>
+        <h2>Frame-based perception is the ceiling on drone speed.</h2>
+        <p>Cameras blur at speed. GPUs and NPUs add 30–100 ms of queueing, batching, and driver latency. In feedback control, that delay is not an inconvenience — it is the stability margin.</p>
+      </div>
+      <div class="problem-grid">
+        <div class="problem-card reveal">
+          <div class="problem-icon">◐</div>
+          <h3>Motion blur</h3>
+          <p>Frame integration smears exactly the detail a reactive controller needs at the moment it matters most.</p>
+        </div>
+        <div class="problem-card reveal" data-delay="80">
+          <div class="problem-icon">∿</div>
+          <h3>Latency jitter</h3>
+          <p>GPU/NPU latency scales with batch and queue occupancy — unpredictable, and unfixable in software.</p>
+        </div>
+        <div class="problem-card reveal" data-delay="160">
+          <div class="problem-icon">◲</div>
+          <h3>Low dynamic range</h3>
+          <p>Sun, shadow, and glare — the places drones fail most are precisely where frame cameras clip.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ COMPARE ============ -->
-  <section class="section compare" id="compare">
+  <section class="section compare glass" id="compare">
     <div class="section-inner">
       <div class="section-head reveal">
         <span class="kicker">Honest benchmark</span>
@@ -366,12 +322,12 @@
   <section class="section cta" id="cta">
     <div class="cta-card reveal">
       <div class="cta-orbs" aria-hidden="true"></div>
-      <span class="kicker kicker--light">Pilot program</span>
+      <span class="kicker">Pilot program</span>
       <h2>Fly your first mission with sub-ms perception.</h2>
       <p>We're working with inspection service providers and integrators on paid pilots. Tell us your mission — we'll show the latency math.</p>
       <div class="cta-actions">
         <a href="mailto:hello@corelink.io" class="btn btn-primary">hello@corelink.io</a>
-        <a href="#top" class="btn btn-ghost btn-ghost--light">Back to top ↑</a>
+        <a href="#top" class="btn btn-ghost">Back to top ↑</a>
       </div>
     </div>
   </section>
@@ -382,20 +338,19 @@
 <footer class="footer">
   <div class="footer-inner">
     <div class="footer-brand">
-      <img class="brand-logo brand-logo--light" src="assets/logo.svg" alt="CoreLink">
+      <img class="brand-logo" src="assets/logo.svg" alt="CoreLink">
       <p>Sub-millisecond event vision for reactive drone control. Advisor-only perception — the aircraft stays in command.</p>
     </div>
     <div class="footer-cols">
       <div>
         <h4>Product</h4>
-        <a href="#decompose">Core</a>
         <a href="#pipeline">Pipeline</a>
+        <a href="#features">Features</a>
         <a href="#compare">Benchmark</a>
       </div>
       <div>
         <h4>Company</h4>
         <a href="#problem">Problem</a>
-        <a href="#features">Features</a>
         <a href="#cta">Pilot program</a>
       </div>
       <div>
