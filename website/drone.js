@@ -18,11 +18,17 @@
   var hudModule = document.getElementById("hudModule");
 
   /* ---------- renderer / scene / camera ---------- */
-  var renderer = new THREE.WebGLRenderer({
-    canvas: canvas,
-    antialias: true,
-    alpha: true
-  });
+  var renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({
+      canvas: canvas,
+      antialias: true,
+      alpha: true
+    });
+  } catch (e) {
+    section.classList.add("no-webgl");
+    return;
+  }
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.shadowMap.enabled = true;
 
@@ -44,7 +50,7 @@
   blueFill.position.set(-5, -2, -4);
   scene.add(blueFill);
 
-  var orange = new THREE.PointLight(0xff7a1a, 1.2, 14);
+  var orange = new THREE.PointLight(0xff7a1a, 1.6, 16);
   orange.position.set(0, 0.5, 3);
   scene.add(orange);
 
@@ -54,10 +60,10 @@
   var matAccent = new THREE.MeshPhongMaterial({ color: 0xff7a1a, emissive: 0x7a2c00, specular: 0xffc08a, shininess: 80 });
   var matDark = new THREE.MeshPhongMaterial({ color: 0x0d1a4d, specular: 0x4456a0, shininess: 40 });
   var matRotor = new THREE.MeshPhongMaterial({
-    color: 0xdfe8ff, transparent: true, opacity: 0.55, specular: 0xffffff, shininess: 90, side: THREE.DoubleSide
+    color: 0x7d93d8, transparent: true, opacity: 0.6, specular: 0xffffff, shininess: 90, side: THREE.DoubleSide
   });
   var matGlass = new THREE.MeshPhongMaterial({
-    color: 0x0c1a4a, specular: 0x88aaff, shininess: 120, transparent: true, opacity: 0.85
+    color: 0x8fa4e0, specular: 0xffffff, shininess: 120, transparent: true, opacity: 0.85
   });
   var matGold = new THREE.MeshPhongMaterial({ color: 0xffcf6e, specular: 0xffffff, shininess: 110 });
   var matBoard = new THREE.MeshPhongMaterial({ color: 0x0f3b2e, specular: 0x66ffcc, shininess: 40 });
@@ -208,6 +214,15 @@
   var chipSpot = new THREE.PointLight(0xff7a1a, 0, 8);
   chipSpot.position.set(0, 1.2, 1.6);
   scene.add(chipSpot);
+
+  /* ground glow ring under drone */
+  var droneRing = new THREE.Mesh(
+    new THREE.RingGeometry(2.0, 2.12, 48),
+    new THREE.MeshBasicMaterial({ color: 0xff7a1a, transparent: true, opacity: 0.28, side: THREE.DoubleSide })
+  );
+  droneRing.rotation.x = -Math.PI / 2;
+  droneRing.position.y = -0.55;
+  scene.add(droneRing);
 
   /* ground glow ring under chip */
   var ring = new THREE.Mesh(
